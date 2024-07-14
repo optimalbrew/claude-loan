@@ -21,3 +21,10 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# py env http
+/py/.env
+/py/bin
+/py/include
+/py/lib
+/py/pyvenv.cfg

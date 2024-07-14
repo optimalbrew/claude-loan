@@ -1,4 +1,4 @@
-# Using claude sonnnet
+# Simple loan app with rust and react using claude sonnnet
 
 Asked claude sonnet to create a mortgage loan calculator app using react for the front end with a rust backend.
 
@@ -27,7 +27,9 @@ In frontend directory
 npm start
 ```
 
-## Asked about serverless deployment
+### Using Cargo Lambda (serverless)
+
+Asked Claude about serverless deployment and the top pick was AWS. It wasn't all that smmoth to get things running. Was much easier to use cargo lambda
 
 Suggested several options: AWS Lambda, Google cloud functions + Firebase, Azure fucntions 
 * In all cases, the rust code has to be modified to use the platform's crates (e.g. `lambda-http` instead of `actix-web`).
@@ -35,35 +37,16 @@ Suggested several options: AWS Lambda, Google cloud functions + Firebase, Azure 
     * handling API gateways as per the platform
 * The react code is to be built `npn run build`, and then the contents of `build` directory uploaded to static service such as s3, Firebase (google), etc.
 
-The following is verbatim:
 
-Certainly! There are several options to run your loan calculator app in a serverless cloud platform. Here are some popular choices, along with brief explanations of how you could adapt your app for each:
+Getting lambda to work wasn't flawless, and the suggestions from Calude were helpful, but not super pricise. Better to follow documentation and examples from web searches such as https://medium.com/@jed.lechner/effortless-guide-to-setting-up-aws-lambda-with-rust-b2630eeaa0f0
 
-1. AWS Lambda + API Gateway (for Rust backend) + S3 (for React frontend)
-* Backend:
-    * Package your Rust code as a Lambda function
-    * Use AWS API Gateway to create HTTP endpoints
-    * Replace Actix-web with the lambda_http crate
+But the overall idea is simple:
 
-* Frontend:
-   * Build your React app
-   * Upload the static files to an S3 bucket configured for static website hosting
-
-
-2. Google Cloud Functions (for Rust backend) + Firebase Hosting (for React frontend)
-* Backend:
-  * Package your Rust code as a Cloud Function
-  * Use the cloud_functions crate to handle HTTP requests
-* Frontend:
-  * Build your React app
-  * Deploy to Firebase Hosting
-
-3. Azure Functions (for Rust backend) + Azure Static Web Apps (for React frontend)
-4. Cloudflare Workers (for both backend and frontend)
-* Backend:
-  * Rewrite your Rust code to work with Cloudflare Workers using the worker crate
-* Frontend:
-  * Build your React app
-  * Deploy the static assets to Cloudflare Pages or Workers Sites
-
-5. Vercel .. but no rust! Use node or something else that is supported
+* Build the app using `cargo lambda`
+  * test it locally using `cargo lambda watch`
+  * then use `cargo lambda build --release`
+  * find the `bootstrap` (executable) inside `target/lambda/app_name`  and then `zip` it. 
+  * Create a new AWS lambda function (make sure it is open), upload the `bootstrap.zip` file to AWS lambda, create a function_url  
+* Put the front end stuff (e.g. create react app) resources on S3
+  * `App.js` must `fetch` from url Lambda functions (either function url or API gateway), or just `localhost:9000` for `cargo lambda watch`  
+  * `npm run build` and copy all files and directory (e.g. `static`) over to S3 bucket. Set permissions, config.

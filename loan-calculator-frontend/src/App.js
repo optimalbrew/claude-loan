@@ -24,9 +24,9 @@ const theme = createTheme({
 });
 
 function App() {
-  const [principal, setPrincipal] = useState('');
-  const [annualRate, setAnnualRate] = useState('');
-  const [years, setYears] = useState('');
+  const [principal, setPrincipal] = useState('1250000');
+  const [annualRate, setAnnualRate] = useState('5.5');
+  const [years, setYears] = useState('20');
   const [monthlyPayment, setMonthlyPayment] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -34,7 +34,8 @@ function App() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:8080/calculate', {
+      const response = await fetch('http://localhost:9000', {
+      //const response = await fetch('https://*****change this to function url or API gateway****/.amazonaws.com/default/mortage_v2', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,8 +43,9 @@ function App() {
         body: JSON.stringify({
           principal: parseFloat(principal),
           annual_rate: parseFloat(annualRate),
-          years: parseInt(years),
+          years: parseInt(years)
         }),
+        credentials: 'omit',
       });
       const data = await response.json();
       setMonthlyPayment(data.monthly_payment);
