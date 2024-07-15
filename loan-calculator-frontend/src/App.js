@@ -24,9 +24,14 @@ const theme = createTheme({
 });
 
 function App() {
-  const [principal, setPrincipal] = useState('1250000');
-  const [annualRate, setAnnualRate] = useState('5.5');
-  const [years, setYears] = useState('20');
+  const [purch_price, setPurchPrice] = useState('1850000');
+  const [down_payment, setDownPayment] = useState('10.0');
+  const [annual_rate_first, setAnnualRateFirst] = useState('7.0');
+  const [annual_rate_map, setAnnualRateMap] = useState('3.0');
+  const [duration, setDuration] = useState('20');
+  const [prop_tax_and_ins, setPropTaxIns] = useState('1.5');
+  const [hoa, setHOA] = useState('450.0');
+  
   const [monthlyPayment, setMonthlyPayment] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -35,15 +40,19 @@ function App() {
     setIsLoading(true);
     try {
       const response = await fetch('http://localhost:9000', {
-      //const response = await fetch('https://*****change this to function url or API gateway****/.amazonaws.com/default/mortage_v2', {
+      //const response = await fetch('https://***********.execute-api.us-west-2.amazonaws.com/default/mortage_v2', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          principal: parseFloat(principal),
-          annual_rate: parseFloat(annualRate),
-          years: parseInt(years)
+          purch_price: parseFloat(purch_price),
+          down_payment: parseFloat(down_payment),
+          annual_rate_first: parseFloat(annual_rate_first),
+          duration: parseInt(duration),
+          annual_rate_map: parseFloat(annual_rate_map),
+          prop_tax_and_ins: parseFloat(prop_tax_and_ins),
+          hoa: parseFloat(hoa),
         }),
         credentials: 'omit',
       });
@@ -62,7 +71,7 @@ function App() {
       <Container maxWidth="sm">
         <Box sx={{ my: 4 }}>
           <Typography variant="h3" component="h1" gutterBottom align="center">
-            Loan Calculator
+            MAP Payment Calculator
           </Typography>
           <Paper elevation={3} sx={{ p: 3 }}>
             <form onSubmit={handleSubmit}>
@@ -70,11 +79,11 @@ function App() {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Principal"
+                    label="Purchase Price"
                     variant="outlined"
                     type="number"
-                    value={principal}
-                    onChange={(e) => setPrincipal(e.target.value)}
+                    value={purch_price}
+                    onChange={(e) => setPurchPrice(e.target.value)}
                     required
                     InputProps={{
                       startAdornment: <InputAdornment position="start">$</InputAdornment>,
@@ -84,11 +93,11 @@ function App() {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Annual Interest Rate"
+                    label="Down Payment"
                     variant="outlined"
                     type="number"
-                    value={annualRate}
-                    onChange={(e) => setAnnualRate(e.target.value)}
+                    value={down_payment}
+                    onChange={(e) => setDownPayment(e.target.value)}
                     required
                     InputProps={{
                       endAdornment: <InputAdornment position="end">%</InputAdornment>,
@@ -98,14 +107,70 @@ function App() {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Loan Duration"
+                    label="Annual Interest Rate Conventional"
                     variant="outlined"
                     type="number"
-                    value={years}
-                    onChange={(e) => setYears(e.target.value)}
+                    value={annual_rate_first}
+                    onChange={(e) => setAnnualRateFirst(e.target.value)}
                     required
                     InputProps={{
-                      endAdornment: <InputAdornment position="end">years</InputAdornment>,
+                      endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Annual Interest Rate MAP"
+                    variant="outlined"
+                    type="number"
+                    value={annual_rate_map}
+                    onChange={(e) => setAnnualRateMap(e.target.value)}
+                    required
+                    InputProps={{
+                      endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Loan Duration (years)"
+                    variant="outlined"
+                    type="number"
+                    value={duration}
+                    onChange={(e) => setDuration(e.target.value)}
+                    required
+                    InputProps={{
+                      endAdornment: <InputAdornment position="end"></InputAdornment>,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Property Tax and Insurance"
+                    variant="outlined"
+                    type="number"
+                    value={prop_tax_and_ins}
+                    onChange={(e) => setPropTaxIns(e.target.value)}
+                    required
+                    InputProps={{
+                      endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="HOA (monthly)"
+                    variant="outlined"
+                    type="number"
+                    value={hoa}
+                    onChange={(e) => setHOA(e.target.value)}
+                    required
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start">$</InputAdornment>,
                     }}
                   />
                 </Grid>
